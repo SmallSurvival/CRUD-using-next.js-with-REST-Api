@@ -8,13 +8,15 @@ import axios from 'axios';
 import Modal from '@mui/material/Modal';
 import Box from '@mui/material/Box';
 import {AddTodo} from '../Services/users.services'
+import Loader from "../components/loader"
 
 const style = {
     position: 'absolute',
     top: '50%',
     left: '50%',
+    outerHeight: '25%',
     transform: 'translate(-50%, -50%)',
-    width: 400,
+    width: 300,
     bgcolor: 'background.paper',
     border: '2px solid #000',
     boxShadow: 24,
@@ -24,6 +26,7 @@ const style = {
 const WithMaterialUI = ({open,setOpen}) => {
     const handleOpen = () => setOpen(true);
     const handleClose = () => setOpen(false);
+    const [open3, setOpen3] = React.useState(false);
     const validationSchema = yup.object({
         name: yup
             .string('Enter your name')
@@ -51,6 +54,7 @@ const WithMaterialUI = ({open,setOpen}) => {
     return (
         <div>
             <Button onClick={handleOpen}>Add</Button>
+            <Loader open={open3} setOpen={setOpen3} />
             <Modal
                 open={open}
                 onClose={handleClose}
@@ -59,7 +63,7 @@ const WithMaterialUI = ({open,setOpen}) => {
             >
                 <Box sx={style}>
                     <div>
-                        <form onSubmit={formik.handleSubmit} >
+                        <form onSubmit={formik.handleSubmit}>
                             <TextField
                                 fullWidth
                                 id="name"
@@ -69,6 +73,7 @@ const WithMaterialUI = ({open,setOpen}) => {
                                 onChange={formik.handleChange}
                                 error={formik.touched.name && Boolean(formik.errors.name)}
                                 helperText={formik.touched.name && formik.errors.name}
+                                style={{marginBottom:'15px'}}
                             />
                             <TextField
                                 fullWidth
@@ -80,8 +85,9 @@ const WithMaterialUI = ({open,setOpen}) => {
                                 onChange={formik.handleChange}
                                 error={formik.touched.job && Boolean(formik.errors.job)}
                                 helperText={formik.touched.job && formik.errors.job}
+                                style={{marginBottom:'15px'}}
                             />
-                            <Button color="primary" variant="contained" fullWidth type="submit">
+                            <Button color="primary" variant="contained" fullWidth type="submit" onClick={(e) => setOpen3(true)}>
                                 Submit
                             </Button>
                         </form>

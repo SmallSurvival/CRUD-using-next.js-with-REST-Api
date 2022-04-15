@@ -4,43 +4,46 @@ import axios from 'axios';
 import Model from "../components/model"
 import Create from "../components/Create"
 import Button from '@mui/material/Button';
-import { AddTodo, fetchData, deleteTodo } from '../Services/users.services'
+import {  fetchData, deleteTodo } from '../Services/users.services'
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
-import { DataGrid } from '@mui/x-data-grid';
 import UpdateIcon from '@mui/icons-material/Update';
+import Loader from "../components/loader"
 
 export default function App() {
+  
   const columns = [
     {
-      name: 'id',
+      name: 'ID',
       selector: row => row.id,
+     
       width: '100px'
     },
     {
-      name: 'avatar',
+      name: 'Image',
       cell: row => <img src={row.avatar} width={50} alt={row.first_name}></img>,
       selector: row => row.coverimage,
       width: '100px'
     },
     {
-      name: 'last_name',
+      name: 'Last Name',
       selector: row => row.last_name,
       width: '200px'
     },
     {
-      name: 'first_name',
+      name: 'First Name',
       selector: row => row.first_name,
       width: '200px',
 
     },
     {
-      name: 'email',
+      name: 'Email',
       selector: row => row.email,
       width: '500px'
     },
     {
       name: 'Delete',
-      cell: row => <Button  variant="outlined"  size="small" onClick={(e) => deleteTodo(row.id, e)}><DeleteForeverIcon /></Button >,
+      cell: row => <Button  variant="outlined"  size="small" onClick={(e) => deleteTodo(row.id, e)}><DeleteForeverIcon  onClick={(e) => setOpen3(true)}/></Button >,
+    
       width: '100px'
     },
     {
@@ -56,12 +59,11 @@ export default function App() {
   const [totalRows, setTotalRows] = useState(0);
   const [perPage, setPerPage] = useState(10);
   const [update, setUpdate] = useState('');
-  const [Add, setAdd] = useState('');
   const [open, setOpen] = React.useState(false);
   const [open2, setOpen2] = React.useState(false);
+  const [open3, setOpen3] = React.useState(false);
 
   useEffect(() => {
-
     getData(1, perPage);
   }, [perPage])
 
@@ -70,29 +72,31 @@ export default function App() {
     try {
       setUpdate(row);
       console.log(row);
-      console.log('before', open);
       setOpen(true);
-      console.log('after', open);
+      console.log("open value",open3);
     }
     catch (ex) {
       console.log('Not Updated!', ex);
     }
   };
   const getData = (page, per_page) => {
+    setOpen3(true);
     fetchData(page, per_page)
       .then(
         (result) => {
           // handle success
-        
           console.log('result', result);
           setIsLoaded(true);
           setItems(result.data.data);
           setTotalRows(result.data.total);
-        })
+          
+        }
+        )
       .catch((error) => {
         setIsLoaded(true);
         setError(error);
         console.log(error.config);
+        
       });
   };
 
@@ -115,7 +119,10 @@ export default function App() {
   // }
 
   const handlePageChange = page => {
+    
     getData(page, perPage);
+    setOpen3(true);
+    
   }
 
   const handlePerRowsChange = async (newPerPage, page) => {
@@ -125,12 +132,15 @@ export default function App() {
   if (error) {
     return <div>Error: {error.message}</div>;
   } else if (!isLoaded) {
-    return <div>Please w8t...</div>;
+    return <div>Please w8t...
+    </div>;
   } else {
     return (
       <>
         {/* using props to send data to another component*/}
-        <Model id="change" open={open} setOpen={setOpen} update={update} />
+        {/* props hmehsa same rhye ga  */}
+        <Loader open={open3} setOpen={setOpen3} />
+        <Model  open={open} setOpen={setOpen} update={update} />
         <div>
           <DataTable
             columns={columns}
@@ -141,10 +151,12 @@ export default function App() {
             onChangePage={handlePageChange}
             onChangeRowsPerPage={handlePerRowsChange}
           />
+          <Create open={open2} setOpen={setOpen2} />
         </div>
-        <Create open={open2} setOpen={setOpen2} />
+        
       </>
 
     );
   }
 }
+

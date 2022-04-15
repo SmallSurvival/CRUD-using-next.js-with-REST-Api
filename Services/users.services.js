@@ -12,6 +12,7 @@ export const deleteTodo = async (id, ex) => {
                 `/users/${id}`,
             ).then((res)=>{
                 console.log(res);
+                alert(JSON.stringify(res.status, null, 2));
             })
        
     );

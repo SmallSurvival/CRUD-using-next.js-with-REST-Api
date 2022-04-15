@@ -5,6 +5,7 @@ export default function Home() {
         <title>Create Next App</title>
         <h2>Crud Application</h2>
         <Add/>
+        
     </div>
   );
 }
